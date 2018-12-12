@@ -133,6 +133,17 @@ object MonomorphicBinarySearch {
 
 object PolymorphicFunctions {
 
+  def main(args: Array[String]): Unit = {
+    var greaterThan = (a: Int, b: Int) => a > b
+    try {
+      println(isSorted(Array(), greaterThan))
+    } catch {
+      case _: Throwable => println("This is what exception handling in Scala looks like.")
+    }
+    println(isSorted(Array(1, 2, 3), greaterThan))
+    println(isSorted(Array(3, 2, 1), greaterThan))
+  }
+
   // Here's a polymorphic version of `binarySearch`, parameterized on
   // a function for testing whether an `A` is greater than another `A`.
   def binarySearch[A](as: Array[A], key: A, gt: (A,A) => Boolean): Int = {
@@ -153,7 +164,17 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+    if (as.length == 0) throw new Exception("Array must not be empty")
+
+    @annotation.tailrec
+    def loop(n: Int): Boolean = {
+      if (n >= as.length - 2) true
+      else if (!(gt(as(n), as(n + 1)))) false
+      else loop(n + 1)
+    }
+    loop(0)
+  }
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
